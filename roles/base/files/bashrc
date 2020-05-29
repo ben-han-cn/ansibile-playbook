@@ -1,0 +1,34 @@
+export MARKPATH=$HOME/.marks
+function j { 
+    cd -P $MARKPATH/$1 2>/dev/null || echo "No such mark: $1"
+}
+function mark { 
+    mkdir -p $MARKPATH; ln -s $(pwd) $MARKPATH/$1
+}
+function unmark { 
+    rm -i $MARKPATH/$1 
+}
+function marks {
+    ls -l $MARKPATH | sed 's/  / /g' | cut -d' ' -f9- | sed 's/ -/\t-/g' && echo
+}
+
+function delbr {
+    git co master; git br -D $1; git push origin :$1 
+}
+
+function cleanbr {
+    git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d
+}
+
+function cgp {
+    mkdir "$1"; cd "$1";git init --bare --shared=group;cd ..;mv "$1" "$1".git
+}
+
+function rmcontainer {
+    docker rm -f $(docker ps -a -q)
+}
+
+set -o vi
+
+export PS1='dev\$ '
+export GOPROXY=https://goproxy.cn

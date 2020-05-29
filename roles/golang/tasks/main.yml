@@ -1,0 +1,29 @@
+---
+- name: copy go
+  copy: 
+    src: {{ goversion }}.linux-amd64.tar.gz
+    dest: /tmp
+
+- name: install go
+  unarchive:
+    src: /tmp/{{ goversion }}.linux-amd64.tar.gz
+    dest: /usr/local
+    copy: no
+
+- name: create go src folder
+  become: no
+  file:
+    path: ~/workspace/code/go/src
+    state: directory
+
+- name: set go env
+  copy: 
+    src: set-go-env.sh
+    dest: /etc/profile.d
+
+- name: install go vim plugin
+  become: no
+  git:
+    repo: https://github.com/fatih/vim-go.git 
+    dest: ~/.vim/bundle/vim-go
+    accept_hostkey: yes

@@ -1,7 +1,6 @@
 filetype plugin on
 filetype indent on
 
-execute pathogen#infect()
 set number
 set smartcase
 
@@ -19,20 +18,63 @@ set tabstop=4
 set smarttab
 set shiftround
 set nojoinspaces
+set hls
 
 set ruler
 
 let mapleader = ","
 nnoremap <leader><space> :noh<cr>
 inoremap jj <ESC>
-nnoremap rr :!ruby %<CR>
 nnoremap ne :lnext<CR>
 nnoremap pe :lprev<CR>
+nnoremap gc :GoCoverage<CR>
+nnoremap gtj :GoAddTags json<CR>
+nnoremap gty :GoAddTags yaml<CR>
 nnoremap <leader>" viw<esc>a"<esc>hbi"<esc>lel
 
-set path+=**
-set wildmenu
-
-let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
 let g:rustfmt_autosave = 1
+let g:go_fmt_autosave = 1
+let g:go_def_mapping_enabled = 0
+
+let g:hindent_on_save = 1
+
+
+set hidden
+set nobackup
+set nowritebackup
+set cmdheight=2
+
+
+hi CocErrorFloat ctermfg=black ctermbg=white
+hi CocWarningFloat ctermfg=black ctermbg=white
+hi CocHintFloat ctermfg=black ctermbg=white
+
+nnoremap sc :hi! CocErrorFloat ctermfg=white ctermbg=white<CR>
+
+
+call plug#begin('~/.vim/plugged')
+Plug 'alx741/vim-hindent'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'rust-lang/rust.vim'
+call plug#end()
+
+nmap <silent> ge <Plug>(coc-diagnostic-next)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+nmap <silent> rn <Plug>(coc-rename)
+nmap <leader>a <Plug>(coc-codeaction-selected)
+
